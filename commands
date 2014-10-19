@@ -45,7 +45,7 @@ function get_postgresql_id() {
 
 function get_postgresql_port() {
     ID=$(get_postgresql_id)
-    PORT=$(docker port "$ID" 5432 | sed 's/0.0.0.0://')
+    PORT=$(docker port "$ID" 5432 | cut -d: -f2)
     echo $PORT
 }
 
@@ -92,7 +92,9 @@ case "$1" in
     IMAGE=$(docker commit $ID)
     docker tag $IMAGE $DB_IMAGE
     # Launch container
-    ID=$(docker run -v $VOLUME -p 5432 -d $DB_IMAGE /usr/bin/start_pgsql.sh $DB_PASSWORD)
+    # ID=$(docker run -v $VOLUME -p 5432 -d $DB_IMAGE /usr/bin/start_pgsql.sh $DB_PASSWORD)
+    GATEWAY_IP=$(ip -f inet -o addr show docker0 | cut -d\  -f 7 | cut -d/ -f 1)
+    ID=$(docker run -v $VOLUME -p $GATEWAY_IP::5432 -d $DB_IMAGE /usr/bin/start_pgsql.sh $DB_PASSWORD)
     sleep 4
     # Rename persistent volume
     if [[ ! -f "$DOKKU_ROOT/.postgresql/volume_$APP" ]]; then
