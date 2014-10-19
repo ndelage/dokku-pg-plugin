@@ -1,3 +1,5 @@
+> Note, this fork differs from mainline in that the PG server doesn't bind to 0.0.0.0 and end up accessible to the general public. The relevant changes were stolen from this pull request: https://github.com/Kloadut/dokku-pg-plugin/pull/25
+
 PostgreSQL plugin for Dokku
 ---------------------------
 
@@ -14,7 +16,7 @@ Installation
 ------------
 ```
 cd /var/lib/dokku/plugins
-git clone https://github.com/Kloadut/dokku-pg-plugin postgresql
+git clone https://github.com/ndelage/dokku-pg-plugin postgresql
 dokku plugins-install
 ```
 
